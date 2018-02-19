@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        *{box-sizing: border-box}
+        ul,li{
+          margin:0;
+          padding:0;
+          list-style: none;
+        }
+        .tab-ct .header:after{
+          content:'';
+          display:block;
+          clear:both;
+        }
+        .tab-ct .header>li{
+          width:60px;
+          height:30px;
+          line-height:30px;
+          border:1px solid #ccc;
+          border-right:none;
+          float:left;
+          text-align:center;
+        }
+        .tab-ct .header>li.active{
+          background:#ccc;
+        }
+        .tab-ct .header>li:last-child{
+          border-right:1px solid #ccc;
+        }
+        .tab-ct .content>li{
+          width: 180px;
+          height:100px;
+          border:1px solid #ccc;
+          border-top:none;
+          padding:10px;
+          display:none;
+        }
+        .tab-ct .content>li.active{
+          display:block;
+        }
+      </style>
+</head>
+<body>
+    <div class="tab-ct">
+        <ul class="header">
+            <li class="active">tab1</li>
+            <li>tab2</li>
+            <li>tab3</li>
+        </ul>
+        <ul class="content">
+            <li class="active">
+              <ul><li>dddd</li></ul>
+            </li>
+            <li>ct2</li>
+            <li>ct3</li>
+        </ul>
+    </div>
+    <div class="tab-ct">
+        <ul class="header">
+            <li class="active">tab1</li>
+            <li>tab2</li>
+            <li>tab3</li>
+        </ul>
+        <ul class="content">
+            <li class="active">
+              <ul><li>dddd</li></ul>
+            </li>
+            <li>ct2</li>
+            <li>ct3</li>
+        </ul>
+    </div>
+    <script>
+        // 第一种 缺点：全局变量，会产生冲突
+        /*
+        var tabs = document.querySelectorAll('.tab-ct .header>li');
+        var panels = document.querySelectorAll('.tab-ct .content>li')
+        
+        tabs.forEach(function(tab){
+            tab.addEventListener('click',function(){
+            
+            tabs.forEach(function(node){
+                node.classList.remove('active')
+            });
+            
+            this.classList.add('active')
+            var index = [].indexOf.call(tabs,this)
+            
+            panels.forEach(function(node){
+                node.classList.remove('active')
+            })
+            panels[index].classList.add('active')
+            })
+        })  */
+
+// ---------------
+        //优化全局变量，通过对象的方式调用。把tabs和panels变为局部变量。
+        //缺点：假如功能特别复杂，全都放在init中太啰嗦。
+        /*var tab = {
+            init:function(){
+                var tabs = document.querySelectorAll('.tab-ct .header>li');
+                var panels = document.querySelectorAll('.tab-ct .content>li')
+                tabs.forEach(function(tab){
+                    tab.addEventListener('click',function(){
+                    
+                    tabs.forEach(function(node){
+                        node.classList.remove('active')
+                    });
+                    
+                    this.classList.add('active')
+                    var index = [].indexOf.call(tabs,this)
+                    
+                    panels.forEach(function(node){
+                        node.classList.remove('active')
+                    })
+                    panels[index].classList.add('active')
+                    })
+                })
+            }
+        }
+        tab.init()
+        */
+
+// ---------------------
+        //分为初始化，绑定事件，渲染三个部分，名字都是自己起的
+        // 缺点：页面上有两个Tab组，就会出错
+        /*var Tab = {
+            init:function(){
+                // this 相当于Tab,赋值给Tab
+                this.tabs = document.querySelectorAll('.tab-ct .header>li');
+                this.panels = document.querySelectorAll('.tab-ct .content>li');
+                this.bind()
+            },
+            bind:function(){
+                // 在这个函数中，想找到tabs和panels,也用this
+                this.tabs.forEach(function(tab){
+                    tab.addEventListener('click',function(){
+                    
+                    Tab.tabs.forEach(function(node){
+                        node.classList.remove('active')
+                    });
+                    
+                    this.classList.add('active')
+                    var index = [].indexOf.call(Tab.tabs,this)
+                    
+                    Tab.panels.forEach(function(node){
+                        node.classList.remove('active')
+                    })
+                    Tab.panels[index].classList.add('active')
+                    })
+                })
+            }
+            // render:function(){
+
+            // }
+        }
+        Tab.init()*/
+
+// ---------------------
+        // 事件代理的方式实现
+        /*var Tab = {
+            init:function(){
+                this.tabs = document.querySelectorAll('.tab-ct .header>li')
+                this.panels = document.querySelectorAll('.tab-ct .content>li')
+                this.tabHeader = document.querySelector('.tab-ct .header')
+
+                this.bind()
+            },
+            bind:function(){
+                var self = this
+                this.tabHeader.addEventListener('click',function(e){
+                    if(e.target.tagName.toLowerCase() ==='li'){
+                        self.tabs.forEach(function(node) {
+                            node.classList.remove('active')
+                        });
+                        var index = [].indexOf.call(self.tabs,e.target)
+                        self.panels.forEach(function(node){
+                            node.classList.remove('active')
+                        })
+                        self.tabs[index].classList.add('active')
+                        self.panels[index].classList.add('active')
+                    }
+                })
+            }
+        }
+        Tab.init()*/
+
+// ---------------------
+        //构造函数的方式创建对象优化tab切换： 
+        //缺点：占用内存
+        /*
+        function Tab(tabNode){
+            this.init = function(tabNode){
+                this.tabs = tabNode.querySelectorAll('.tab-ct .header>li')
+                this.panels = tabNode.querySelectorAll('.tab-ct .content>li')
+                this.tabHeader = tabNode.querySelector('.tab-ct .header')
+
+            }
+            this.bind = function(){
+                var self = this
+                this.tabHeader.addEventListener('click',function(e){
+                    // console.log(this)
+                    if(e.target.tagName.toLowerCase() ==='li'){
+                        self.tabs.forEach(function(node) {
+                            node.classList.remove('active')
+                        });
+                        var index = [].indexOf.call(self.tabs,e.target)
+                        self.panels.forEach(function(node){
+                            node.classList.remove('active')
+                        })
+                        self.tabs[index].classList.add('active')
+                        self.panels[index].classList.add('active')
+                    }
+                })
+            }
+            //绑定两个属性init和bind，但不会调用
+
+            this.init(tabNode)
+            this.bind()
+        }
+
+        var tabNode1 = document.querySelectorAll('.tab-ct')[0]  //页面中第一个class
+        var tabNode2 = document.querySelectorAll('.tab-ct')[1]  //页面中第二个class
+
+        new Tab(tabNode1)
+        new Tab(tabNode2)
+        */
+
+// ---------------------
+        //原型链的方式创建对象      
+        function Tab(tabNode){
+            this.init(tabNode)
+            this.bind()
+        }
+
+        Tab.prototype.init = function(tabNode){
+            this.tabs = tabNode.querySelectorAll('.tab-ct .header>li')
+            this.panels = tabNode.querySelectorAll('.tab-ct .content>li')
+            this.tabHeader = tabNode.querySelector('.tab-ct .header')
+        }
+
+        Tab.prototype.bind = function(){
+            var self = this
+            this.tabHeader.addEventListener('click',function(e){
+                // console.log(this)
+                if(e.target.tagName.toLowerCase() ==='li'){
+                    self.tabs.forEach(function(node) {
+                        node.classList.remove('active')
+                    });
+                    var index = [].indexOf.call(self.tabs,e.target)
+                    self.panels.forEach(function(node){
+                        node.classList.remove('active')
+                    })
+                    self.tabs[index].classList.add('active')
+                    self.panels[index].classList.add('active')
+                }
+            })
+        }
+
+        var tabNode1 = document.querySelectorAll('.tab-ct')[0]  //页面中第一个class
+        var tabNode2 = document.querySelectorAll('.tab-ct')[1]  //页面中第二个class
+
+        var tab1 = new Tab(tabNode1)
+        var tab2 = new Tab(tabNode2)
+
+    </script>
+</body>
+</html>

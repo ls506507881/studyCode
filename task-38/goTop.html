@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .ct{
+            
+        }
+        .ct li{
+            height: 100px;
+            width: 100%;
+            background: orchid;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        .btn{
+            position: fixed;
+            right: 100px;
+            bottom: 60px;
+            width: 80px;
+            color: #fff;
+            background: hotpink;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .3);
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            opacity: .8;
+            display: none;
+        }
+        .btn:hover{
+            opacity: 1;
+        }
+        .btn.show{
+            display: block;
+        }
+    </style>
+
+
+        <div class="ct">
+            <ul>
+                <li>1
+                <h3>当滚动条大于250px时，出现btn，当滚动条高度小于250px时，btn消失</h3>
+                </li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li>5</li>
+                <li>6</li>
+                <li>7</li>
+            </ul>
+            <div class="btn">回到顶部</div>
+        </div>
+        <script>
+            // 如果滚动条小于-100px，出现按钮
+            //首先获取滚动的ct
+            //得到他距离顶部的距离
+            //小于-100px,显示回到顶部按钮
+            //大于-100px,隐藏回到顶部按钮
+            // 点击按钮，顶部距离设置为0
+
+            // setInterval(function(){
+            //     var nodeTop = document.querySelector('.ct').scrollTop;
+            //     var sTop = document.documentElement.scrollTop;
+            //     var result = sTop - nodeTop;
+            //     if(result>100){
+            //         // 显示按钮
+            //     }else{
+            //         // 隐藏按钮
+            //     }
+            // },1000)
+
+            // 问题6： 创建一个 GoTop 对象，当 new 一个 GotTop 对象则会在页面上创建一个回到顶部的元素，
+            // 点击页面滚动到顶部。拥有以下属性和方法
+            // ct属性，GoTop 对应的 DOM 元素的容器
+            // target属性， GoTop 对应的 DOM 元素
+            // bindEvent 方法， 用于绑定事件
+            // createNode 方法， 用于在容器内创建节点
+            function GoTop(node) {
+                // this.nodeTop = document.querySelector('.ct').scrollTop;
+                // this.sTop = document.documentElement.scrollTop;
+                // this.result = sTop - nodeTop;
+                // this.btn = document.querySelector('.btn');
+
+                this.wrap = node;
+                this.btnTop.innerHtml =  '<button class="btn">回到顶部</button>';
+            }
+            
+            GoTop.prototype.creatNode = function(){
+                this.btnTop.appendTo(this.wrap);
+            }
+            
+            GoTop.prototype.bindEvent = function(){
+                var _this = this;
+                $(window).on('scroll', function(){
+                    if(_this.result>100){
+                        _this.btnTop.classList.add("show")
+                    }else{
+                        _this.btnTop.classList.remove("show")
+                    }
+                }
+            );
+            this.btnTop.on('click', function(){
+                document.documentElement.scrollTop = 0
+            })      
+            }
+
+            // 最简单的实现
+            /*
+            setInterval(function(){
+                var nodeTop = document.querySelector('.ct').scrollTop;
+                var sTop = document.documentElement.scrollTop;
+                var result = sTop - nodeTop;
+                var btn = document.querySelector('.btn');
+                if(result>100){
+                    btn.classList.add("show")
+                }else{
+                    btn.classList.remove("show")
+                }
+                btn.onclick= function(){
+                    document.documentElement.scrollTop = 0
+                }
+            },500)
+
+            // function GoTop(goNode,btn){
+            //     this.init = function(goNode){
+            //         var nodeTop = document.querySelector(goNode).scrollTop;
+            //         var sTop = document.documentElement.scrollTop;
+            //         var result = sTop - nodeTop;
+            //         var btn = document.querySelector(btn);
+            //     }
+            // }
+
+            // GoTop.prototype.createNode = function(){
+            //     if(GoTop.result>100){
+            //         GoTop.btn.classList.add("show")
+            //     }else{
+            //         // GoTop.btn.classList.remove("move")
+            //     }
+            // }
+            // GoTop.prototype.bindEvent = function(){
+            //     console.log(1)
+            //     this.btn.onclick= function(){
+            //         document.documentElement.scrollTop = 0
+            //     }
+            // }
+
+            // var goTop1 = new GoTop('.ct','.btn')
+            // goTop1.createNode()
+            // goTop1.bindEvent()
+        </script>
+</body>
+</html>

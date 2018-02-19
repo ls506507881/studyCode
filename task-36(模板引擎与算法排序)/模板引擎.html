@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var TemplateEngine = function(tpl,data){
+        var regex = /<%([^%>]+)?%>/g;  //匹配<% for... %>,<% songs[i].name %>等。 ()分组，会把<% %>内的取出来
+        while(match = regex.exec(tpl)){
+            console.log(match)
+            //match === ["<%name%>", "name", index: 21, input: "<p>Hello, my name is <%name%>.I'm <%age%> years
+            //match[1] === 第一次"name" ; 第二次"age"
+            //data(match[1]) === 第一次data("name") ; 第二次data("age")
+            tpl = tpl.replace(match[0],data[match[1]])
+            //第一次这样tpl = tpl.replace(<%name%>,data["name"])
+            //第二次这样tpl = tpl.replace(<%age%>,data["age"])
+            console.log(data[match[1]])
+        }
+            return tpl;
+        }
+        var template = '<p>Hello, my name is <%name%>.I\'m <%age%> years old.<%gender%></p>'
+
+        var data = {
+            name: "krasimir",
+            age: 29,
+            gender: "male"
+        }
+        var string = TemplateEngine(template,data)
+        console.log(string)
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    //冒泡排序
+    /*function sort(array){
+        var i,j
+        for(i=0;i<array.length;i++){ //第i次
+            for(j=0;j<array.length-1-i;j++){  //每一次的起点  -i(不用拍后面已经排好的)
+                //console.log(array[j]+','+array[j+1])
+                if(array[j]<=array[j+1]){
+
+                }else{
+                    swap(array,j,j+1)
+                    //console.log('swap'+array[j]+','+array[j+1])
+                }
+            }
+        }
+        return array;
+    }
+
+    function swap(array,a,b){
+        var temp = array[a]
+        array[a] = array[b]
+        array[b] = temp
+    }
+
+    console.log(sort([3,5,2,4,1]))
+    console.log(sort([1,2,1,2,1]))
+    console.log(sort([1]))
+    console.log(sort([]))*/
+
+// --------------------
+    // 选择排序
+    function sort(array){
+        var i //第几次
+        var j //当前捕捉数值的位置
+        var indexOfMin  //记录这次对比中，最小数值的下标(标红)
+        for(i=0; i<array.length; i++){
+            indexOfMin = i
+            for(j=i+1;j<array.length; j++){  //i+1 选一个和第一个做对比 不加1就和自己对比一次
+                if(array[j] < array[indexOfMin]){  //如果比最小值小，就记录位置
+                    indexOfMin = j
+                }
+            }
+            if(indexOfMin !== i){
+                swap(array,i,indexOfMin)
+            }
+        }
+        return array;
+    }
+
+    function swap(array,a,b){
+        var temp = array[a]
+        array[a] = array[b]
+        array[b] = temp
+    }
+
+    console.log(sort([3,5,2,4,1]))
+    console.log(sort([1,2,1,2,1]))
+    console.log(sort([1]))
+    console.log(sort([]))
+    </script>
+</body>
+</html>
