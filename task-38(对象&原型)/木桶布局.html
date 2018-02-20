@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html> 
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>木桶布局</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link href="" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .img-preview {
+            width: 1000px;
+            margin: 0 auto;
+        }
+        .img-row {
+            margin-bottom: 8px;
+        }
+        .img-row:after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+        .img-box {
+            float: left;
+        }
+        .img-line .img-box:first-child {
+            padding-left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="img-preview"></div>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+        /*function Barrel($ct) {  //声明一个组件
+            this.$ct = $ct;
+            this.rowList = [];
+            this.loadImg();
+        }
+        Barrel.prototype = {  //绑定到原型
+            loadImg: function () {   //loadImg属性
+                var _this = this;    //防止this变化
+                var imgs = this.getImgUrls(10);    //调用getImgUrls函数，生成十张图片
+
+                for (var i = 0; i < imgs.length; i++) {  //把十张图片遍历
+                    var img = new Image();  
+                    img.src = imgs[i];
+                    img.onload = function () {
+                        var imgInfo = {
+                            target: this,
+                            width: 200 * (this.width / this.height),
+                            height: 200
+                        };
+                        _this.render(imgInfo);
+                    }
+                }
+                //
+            },
+            render: function (imgInfo) {
+                var clientWidth = this.$ct.width();
+                var rowWidth = 0;
+                var newRowHeight = 0;
+                var lastImgInfo = imgInfo;
+
+                this.rowList.push(imgInfo);
+                for (var i = 0; i < this.rowList.length; i++) {
+                    rowWidth = rowWidth + this.rowList[i].width;
+                }
+                if (rowWidth > clientWidth) {
+                    this.rowList.pop();
+                    newRowHeight = clientWidth * 200 / rowWidth;
+                    //   rowWidth/200   ==  clientWidth/ X
+
+                    this.layout(newRowHeight);
+                    this.rowList = [];
+                    this.rowList.push(imgInfo);
+                }
+            },
+            layout: function (newRowHeight) {
+                console.log('createRow');
+                var $rowCt = $('<div class="img-row"></div>');
+                $.each(this.rowList, function (idx, imgInfo) {
+                    var $imgCt = $('<div class="img-box"></div>'),
+                        $img = $(imgInfo.target);
+                    $img.height(newRowHeight);
+                    $imgCt.append($img);
+                    $rowCt.append($imgCt);
+                });
+                console.log(this.$ct)
+                this.$ct.append($rowCt);
+            },
+            getImgUrls: function (num) {   //getImgUrls属性
+                var color, width, height, urls = [];   
+                for (var i = 0; i < num; i++) {  //遍历
+                    color = Math.random().toString(16).substring(2, 8);  
+                    //Math.random()随机生成0~1的数值
+                    //toString()转换为字符串，16表示16进制
+                    //substring()提取字符串中介于两个指定下标之间的字符
+                    width = Math.floor(Math.random() * 100 + 50);
+                    height = Math.floor(Math.random() * 30 + 50);
+                    urls.push("http://placehold.it/" + width + "x" + height + "/" + color + "/fff");
+                    //http://placehold.it/150x80/000/fff 地址要求：尺寸/背景颜色/字体颜色
+                }
+                return urls; //输出生成的随机图片
+            }
+        }
+
+        new Barrel($('.img-preview'));*/
+
+
+        function Barrels($ct) {  //声明一个组件
+            this.$ct = $ct;
+            this.imgNum = 40;
+            this.baseHeight = 100;
+            this.rowList = [];
+            this.loadImg();
+        }
+        Barrels.prototype = {   //绑定到原型
+            loadImg: function () {   //loadImg属性
+                var _this = this;    //防止this变化
+                var imgUrls = this.getImgUrls(100); //调用getImgUrls函数，生成100张图片
+                $.each(imgUrls, function (idx, url) { //遍历100张图片,遍历一个数组通常用$.each()
+                //[jquery $().each和$.each()](https://www.cnblogs.com/zzcit/p/5695172.html)
+                //$.each(数组,function(i,n){});参数i为遍历索引值，n为当前的遍历对象.
+                    // console.log(url);
+                    var img = new Image();  //创建一个Image对象
+                    //[js的 new image()](http://blog.csdn.net/hdchangchang/article/details/9036511)
+                    img.onload = function () {
+                        var originWidth = img.width,  //图片宽度
+                            originHeight = img.height,  //图片高度
+                            ratio = originWidth / originHeight;  // 图片宽度/图片高度
+
+                        var imgInfo = {   
+                            target: $(this),  //图片
+                            width: _this.baseHeight * ratio,  //宽度100*(图片宽度/图片高度)
+                            height: _this.baseHeight,  //高度100
+                            ratio: ratio  // 图片宽度/图片高度
+                        };
+                        _this.render(imgInfo);  //调用函数
+                    }
+                    img.src = url;  //相当于给浏览器缓存了一张图片。
+                });
+            },
+
+            render: function (imgInfo) {  //render属性
+                var _this = this;
+                var rowList = this.rowList,   //空数组，一行
+                    rowWidth = 0,   //一行宽度
+                    rowHeight = 0,  //一行高度
+                    clientWidth = this.$ct.width(),  //图片容器宽度
+                    lastImgInfo = imgInfo;      //传入的图片
+                this.rowList.push(imgInfo);     //push到空数组中
+
+                $.each(rowList, function (idx, imgInfo){  //遍历这个空数组。
+                    rowWidth += imgInfo.width;      //一行宽度 = 这行宽度+图片宽度
+                    if (rowWidth > clientWidth) {   //如果一行宽度>图片容器宽度
+                        rowList.pop();          //一行数组
+                        //pop()用于删除并返回数组的最后一个元素。原数组发生变化
+                        rowWidth = rowWidth - lastImgInfo.width;  //一行宽度 = 一行宽度 - 最后一张图片宽度
+                        rowHeight = clientWidth * _this.baseHeight / rowWidth;  
+                        //一行高度 = 图片容器宽度*基数高度/一行宽度
+
+                        _this.createRow(rowHeight);  //执行createRow函数
+                        _this.rowList = [];  //清空数组
+                        _this.rowList.push(lastImgInfo);  //最后一张图片放入数组
+                    }
+                });
+            },
+            createRow: function (rowHeight) {  //createRow属性
+                // console.log('createRow');
+                var $rowCt = $('<div class="img-row"></div>');  //创建一个div
+                $.each(this.rowList, function (idx, imgInfo) {  //遍历这一行数组
+                    var $imgCt = $('<div class="img-box"></div>'),  //创建图片容器
+                        $img = imgInfo.target;
+                    $img.height(rowHeight);
+                    $imgCt.append($img);
+                    $rowCt.append($imgCt);
+                });
+                console.log(this.$ct)
+                this.$ct.append($rowCt);
+            },
+            getImgUrls: function (num) {  //getImgUrls属性,生成图片
+                var color, width, height, urls = [];
+                for (var i = 0; i < num; i++) {
+                    color = Math.random().toString(16).substring(2, 8);
+                    //Math.random()随机生成0~1的数值
+                    //toString()转换为字符串，16表示16进制
+                    //substring()提取字符串中介于两个指定下标之间的字符
+                    width = Math.floor(Math.random() * 100 + 50);
+                    height = Math.floor(Math.random() * 30 + 50);
+                    urls.push("http://placehold.it/" + width + "x" + height + "/" + color + "/fff");
+                    //http://placehold.it/150x80/000/fff 地址要求：尺寸/背景颜色/字体颜色
+                    //输出生成的随机图片
+                }
+                return urls;
+            }
+        }
+        var barrels = new Barrels($('.img-preview'));
+    </script>
+</body>
+
+</html>
