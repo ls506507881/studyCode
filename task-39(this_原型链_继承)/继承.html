@@ -1,12 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
+
 <body>
-    
+    <script>
+        function Person(name, age) {
+            this.name = name
+            this.age = age
+        }
+        Person.prototype.sayName = function () {
+            console.log('My name is ' + this.name)
+        }
+        Person.prototype.walk = function () {
+            console.log(this.name + ' is walking')
+        }
+
+        //构造一个人
+        var p = new Person('jack', 20)
+        function Student(name, age, sex) {
+            //第一步：把属性继承过来
+            //Person.call(this,name,age)  //和下面方法一样
+            Person.bind(this)(name, age)  //执行Person函数 重点！ 这种方法只能继承属性，不能继承方法。
+            //第二步：继承方法
+            //Student.prototype.__proto__ = Person.prototype  使用下面的方法
+            this.sex = sex
+        }
+        
+        //继承方法
+        Student.prototype = Object.create(Person.prototype)
+        //如果不使用上面这句,可以使用以下代码代替，要注意次序，在下面代码之前。
+        //fn.prototype = Person.prototype
+        //function fn(){}
+        //Student.prototype = new fn()
+
+        Student.prototype.constructor = Student  //指向自身，不写则指向Person
+
+        //s instanceof Student    true
+        //s instanceof Person     true
+        //s.__proto__.__proto__ === Person.prototype   true
+
+        //增加的新属性
+        Student.prototype.doing = function () {
+            console.log('I an studing')
+        }
+
+        var s = new Student('mack', 2, 'boy')
+    </script>
 </body>
+
 </html>

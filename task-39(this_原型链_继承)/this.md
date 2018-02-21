@@ -14,6 +14,7 @@ window.a
 //返回1
 window.b
 //返回2
+window.a === this.a  //true
 ```
 #### 作为函数调用
 在函数被直接调用时this绑定到全局对象。在浏览器中，window 就是该全局对象
@@ -199,6 +200,19 @@ Math.max(1,2,7,4)  //这样才能得到最大值
 console.log(Math.max.apply(null,arr))
 ```
 #### arguments
+arguments是一个类数组对象，不是一个数组，没有数组的方法。
+```
+[].join()    //数组里面有个join的方法。
+
+如果这样写
+function joinStr(){
+    return arguments.join('-')
+}
+joinStr('a','b','c')
+会报错，arguments不是一个函数，是一个对象。没有join方法
+
+正确方法在下面
+```
 在函数调用时，会自动在该函数内部生成一个名为 arguments的隐藏对象
 
 该对象类似于数组，可以使用[]运算符获取函数调用时传递的实参
@@ -218,7 +232,7 @@ console.log(Math.max.apply(null,arr))
 方法一
 function joinStr(){
     console.log(Array.prototype.join.call(arguments,'-'))  //join() 将数组转化为字符串
-    //[].join.call === Array.prototype.call
+    //[].join.call === Array.prototype.call  没有区别。[]是Array的一个实例。
 }
 joinStr('a','b','c')   //a-b-c
 

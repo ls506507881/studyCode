@@ -175,8 +175,8 @@
                 var $rowCt = $('<div class="img-row"></div>');  //创建一个div
                 $.each(this.rowList, function (idx, imgInfo) {  //遍历这一行数组
                     var $imgCt = $('<div class="img-box"></div>'),  //创建图片容器
-                        $img = imgInfo.target;
-                    $img.height(rowHeight);
+                        $img = imgInfo.target;      //
+                    $img.height(rowHeight); //
                     $imgCt.append($img);
                     $rowCt.append($imgCt);
                 });
