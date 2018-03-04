@@ -6,10 +6,13 @@
   <meta charset="utf-8">
   <title>datepicker</title>
   <style>
+    body{
+      background: #F7F8FA;
+    }
     .ui-date-picker {
       position: absolute;
       width: 240px;
-      border: 1px solid #ccc;
+      border: 1px solid #efefef;
       font-size: 14px;
       font-family: serif, cursive, fantasy
     }
@@ -18,7 +21,7 @@
       height: 30px;
       line-height: 30px;
       text-align: center;
-      background-color: #CA2B2B;
+      background-color: #0099E5;
       color: #fff;
     }
 
@@ -64,7 +67,7 @@
 
     .ui-date-picker .pre-month,
     .ui-date-picker .next-month {
-      color: #eee;
+      color: #cecece;
     }
 
     .ui-date-picker .cur-month {
@@ -77,15 +80,15 @@
     }
 
     .ui-date-picker .cur-date {
-      color: #CA2B2B;
+      color: #0099E5;
     }
   </style>
 </head>
 
 <body>
 
-  <input class="date-ipt" type="text" placeholder="有初始值" date-init="2016/05/31" />
-  <input class="date-ipt" type="text" placeholder="无初始值"  />
+  <input class="date-ipt" type="text" placeholder="开始日期" date-init="2018/02/23" />
+  <input class="date-ipt" type="text" placeholder="截止日期"  />
 
   <!-- <div class="ui-date-picker">
     <div class="header">
@@ -153,11 +156,6 @@
         </tr>
       </tbody>
   </div> -->
-
-
-
-
-
 
   <script src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>
