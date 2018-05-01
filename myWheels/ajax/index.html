@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        ul,li{margin: 0;padding: 0;}
+        #ct li{
+            list-style: none;
+            border:1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        #load-more{
+            display: block;
+            margin:10px auto;
+            text-align: center;
+            cursor: pointer;
+        }
+        #load-more img{
+            width: 40px;
+            height: 40px;
+        }
+        .btn{
+            display: inline-block;
+            height: 40px;
+            line-height: 40px;
+            width: 80px;
+            border: 1px solid #E27272;
+            border-radius: 3px;
+            text-align: center;
+            text-decoration: none;
+            color:#E27272;
+        }
+        .btn:hover{
+            background: green; color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <ul id="ct">
+
+    </ul>
+    <a href="#" id="load-more" class="btn">加载更多</a>
+</body>
+<script>
+    var btn = document.querySelector('.btn')  //获取加载更多按钮节点
+    var ct = document.querySelector('#ct')  //获取容器节点
+    var pageIndex = 1;
+    var isDataArrive = true
+    btn.addEventListener('click',function(e){   //给按钮节点绑定点击事件
+        e.preventDefault()  //阻止默认事件执行
+        if(!isDataArrive){ 
+        return;
+        }
+        var xhr = new XMLHttpRequest()     //XMLHttpRequest 对象用于在后台与服务器交换数据。
+        //作用：
+        //在不重新加载页面的情况下更新网页
+        //在页面已加载后从服务器请求数据
+        //在页面已加载后从服务器接收数据
+        //在后台向服务器发送数据
+        xhr.onreadystatechange=function(){  //onreadystatechange 是一个事件句柄。
+        //当 XMLHttpRequest 对象的状态发生改变时，会触发此函数。
+        //状态从 0 (uninitialized) 到 4 (complete) 进行变化。仅在状态为 4 时，我们才执行代码。
+        if(xhr.readyState ===4){  //状态为 4 时，执行代码
+            if(xhr.status===200 || xhr.status ===304 ){
+            console.log(xhr.responseText)
+            var results = JSON.parse(xhr.responseText);
+            //JSON.parse()解析JSON字符串,构造由字符串描述的JavaScript值或对象。
+            console.log(results)
+            var fragment=document.createDocumentFragment()  //创建一个新的空白的文档片段
+            for(var i = 0;i<results.length;i++){   //遍历数组
+                var node = document.createElement('li')   //创建li标签
+                node.innerText=results[i]   //分别把数组内容赋值给li
+                console.log(node.innerText)
+                fragment.appendChild(node)
+                console.log(node)
+            }
+            console.log(fragment)
+            ct.appendChild(fragment)
+            pageIndex += 5
+            }else{
+            console.log('出错了')
+            }
+            isDataArrive = true
+        }
+        }
+        xhr.open('get','loadMore?index='+pageIndex+'&length=5',true)
+        xhr.send()
+        isDataArrive = false
+    })
+</script>
+</html>
